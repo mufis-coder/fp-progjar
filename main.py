@@ -4,6 +4,7 @@ import os
 import random
 
 sys.path.append('/object_game/')
+pygame.init()
 
 from object_game.pipe import Pipe
 from object_game.bird import Bird
@@ -49,17 +50,13 @@ def main():
                 run = False
                 pygame.quit()
                 quit()
+            
+            if (event.type == pygame.KEYDOWN):
+                if (event.key == pygame.K_UP):
+                    bird.jump()
         
-        pipe_ind = 0
-        if(len(pipes)>1 and bird.x>pipes[0].x+pipes[0].PIPE_TOP.get_width()):
-            pipe_ind = 1
-        else:
-            run = False
-            break
-
         #move bird
         bird.move()
-        bird.jump()
 
         add_pipe = False
         rem = []
@@ -87,3 +84,6 @@ def main():
         
         base.move()
         draw_window(win, bird, pipes, base, score)
+
+if __name__ == "__main__":
+    main()
