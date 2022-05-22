@@ -6,6 +6,7 @@ BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bi
 			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
 
 class Bird:
+    IMGS = BIRD_IMGS
     MAX_ROTATION = 25
     ROT_VEL = 20
     ANIMATION_TIME = 5
@@ -18,6 +19,7 @@ class Bird:
         self.vel = 0
         self.height = self.y
         self.img_count = 0
+        self.img = self.IMGS[0]
         
     def jump(self):
         self.vel = -10.5
@@ -26,4 +28,22 @@ class Bird:
     
     def move(self):
         self.tick_count += 1
+
+        d =  self.vel*self.tick_count + 1.5*self.tick_count**2
+
+        if d>=16:
+            d = 16
+        if d<0:
+            d -= 2
+        
+        self.y += d
+
+        if(d<0 or self.y<self.height + 50):
+            if(self.tilt < self.MAX_ROTATION):
+                self.tilt = self.MAX_ROTATION
+        else:
+            if(self.tilt > -90):
+                self.tilt -= self.ROT_VEL
+
+
 
