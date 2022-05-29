@@ -2,6 +2,7 @@ import sys
 import pygame
 import os
 import random
+import pygame_menu
 
 sys.path.append('/object_game/')
 pygame.init()
@@ -29,7 +30,8 @@ def draw_window(win, bird, pipes, base, score):
 
     pygame.display.update()
 
-def main():
+def main(win, clock):
+
     posX = random.randint(230, 250)
     posY = random.randint(100, 500)
 
@@ -37,9 +39,9 @@ def main():
     base = Base(630)
     pipes = [Pipe(600)]
     
-    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    clock = pygame.time.Clock()
-    
+    # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+    # clock = pygame.time.Clock()
+
     score = 0
     
     run = True
@@ -86,4 +88,17 @@ def main():
         draw_window(win, bird, pipes, base, score)
 
 if __name__ == "__main__":
+    
+    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+    clock = pygame.time.Clock()
+    menu = pygame_menu.Menu('Welcome', 400, 300,
+                        theme=pygame_menu.themes.THEME_BLUE)
+
+    menu.add.text_input('Name :', default='Player')
+    menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)])
+    menu.add.button('Play', main(win,clock))
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+
+    menu.mainloop(win)
+
     main()
