@@ -3,6 +3,11 @@ import pygame
 import os
 import random
 import pygame_menu
+import socket
+import select
+import sys
+import pickle
+from threading import Thread
 
 sys.path.append('/object_game/')
 pygame.init()
@@ -11,10 +16,30 @@ from object_game.pipe import Pipe
 from object_game.bird import Bird
 from object_game.base import Base
 
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ip_address = '127.0.0.1'
+port = 8081
+server.connect((ip_address, port))
+
 WIN_WIDTH = 500
 WIN_HEIGHT = 700
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
+
+
+def send_msg(sock, data):
+    sock.send(data.encode())
+    # sys.stdout.write(data)
+    sys.stdout.flush()
+
+def recv_msg(sock):
+    try:
+        data = sock.recv(2048)
+        data_pick = pickle.loads(data)
+        sys.stdout.write("Giliran anda!\n")
+        sys.stdout.flush()
+    except:
+        pass
 
 def draw_window(win, bird, pipes, base, score):
     win.blit(BG_IMG, (0, 0))
@@ -55,6 +80,7 @@ def main(win, clock):
             
             if (event.type == pygame.KEYDOWN):
                 if (event.key == pygame.K_UP):
+                    send_msg(server, "jump")
                     bird.jump()
         
         #move bird
@@ -87,18 +113,26 @@ def main(win, clock):
         base.move()
         draw_window(win, bird, pipes, base, score)
 
+    server.close()
+
 if __name__ == "__main__":
     
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     clock = pygame.time.Clock()
-    menu = pygame_menu.Menu('Welcome', 400, 300,
-                        theme=pygame_menu.themes.THEME_BLUE)
 
-    menu.add.text_input('Name :', default='Player')
-    menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)])
-    menu.add.button('Play', main(win,clock))
-    menu.add.button('Quit', pygame_menu.events.EXIT)
+    Thread(target=send_msg, args=(server,)).start()
+    Thread(target=recv_msg, args=(server,)).start()
 
-    menu.mainloop(win)
+    main(win,clock)
 
-    main()
+    # menu = pygame_menu.Menu('Welcome', 400, 300,
+    #                     theme=pygame_menu.themes.THEME_BLUE)
+
+    # menu.add.text_input('Name :', default='Player')
+    # menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)])
+    # menu.add.button('Play', main(win,clock))
+    # menu.add.button('Quit', pygame_menu.events.EXIT)
+
+    # menu.mainloop(win)
+
+    # main()

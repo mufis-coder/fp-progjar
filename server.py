@@ -40,7 +40,6 @@ def remove(connection):
          if connection == value:
              list_of_clients = list_of_clients.pop(key)
 
-
 while True:
     conn, addr = server.accept()
     list_of_clients.append(conn)
