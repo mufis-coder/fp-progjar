@@ -110,10 +110,11 @@ def main(win, clock):
         for socks in read_socket:
             if socks == server:
                 data = recv_msg(socks)
+                plyr = list(data.keys())[0]
                 if(PLAYER in data and data[PLAYER] == 'Start'):
                     is_move = True
-                elif(PLAYER in data and data[PLAYER] == 'Jump'):
-                    birds[BIRD_1OR2[PLAYER]].jump()
+                elif(data[plyr] == 'Jump'):
+                    birds[BIRD_1OR2[plyr]].jump()
 
         
         #move bird
