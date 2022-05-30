@@ -8,7 +8,7 @@ class Pipe:
     GAP = 200
     VEL = 5
 
-    def __init__(self, x):
+    def __init__(self, x, height):
         self.x = x
         self.height = 0
         self.gap = 100
@@ -19,10 +19,10 @@ class Pipe:
         self.PIPE_BOTTOM = PIPE_IMG
 
         self.passed = False
-        self.set_height()
+        self.set_height(height)
     
-    def set_height(self):
-        self.height = random.randrange(50, 450)
+    def set_height(self, height):
+        self.height = height
         self.top = self.height - self.PIPE_TOP.get_height()
         self.bottom = self.height + self.GAP
     

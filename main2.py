@@ -39,8 +39,8 @@ STAT_FONT = pygame.font.SysFont("comicsans", 50)
 
 BIRD_1OR2 = {"Player1":0, "Player2":1}
 
-def data_send(player, msg):
-    data_dict = {player: msg}
+def data_send(player, act, val=None):
+    data_dict = {"Player":player, "Action":act, "Value":val}
     data = pickle.dumps(data_dict)
     return data
 
@@ -78,10 +78,10 @@ def main(win, clock):
 
     # posX = random.randint(230, 250)
     # posY = random.randint(100, 500)
-
+    height_pipe = 75
     birds = [Bird(POSX1, POSY1, BIRD_IMGS), Bird(POSX2, POSY2, BIRD_IMGS)]
     base = Base(630)
-    pipes = [Pipe(600)]
+    pipes = [Pipe(600, height_pipe)]
     
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     # clock = pygame.time.Clock()
@@ -102,27 +102,15 @@ def main(win, clock):
                 if (event.key == KEYJUMP):
                     send_msg(server, data_send(PLAYER, "Jump"))
                     # bird.jump()
-        
+
         # recv_msg(server)
 
-        socket_list = [server]
-        read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
-        for socks in read_socket:
-            if socks == server:
-                data = recv_msg(socks)
-                plyr = list(data.keys())[0]
-                if(PLAYER in data and data[PLAYER] == 'Start'):
-                    is_move = True
-                elif(data[plyr] == 'Jump'):
-                    birds[BIRD_1OR2[plyr]].jump()
-
-        
         #move bird
         for bird in birds:
             bird.move(is_move)
 
-        add_pipe = False
         rem = []
+        add_pipe = False
         for pipe in pipes:
             for bird in birds:
                 if pipe.collide(bird):
@@ -135,10 +123,26 @@ def main(win, clock):
                     rem.append(pipe)
             
             pipe.move(is_move)
+
+        if(add_pipe):
+            data_send(PLAYER, "Add Pipe")
+
+        socket_list = [server]
+        read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
+        for socks in read_socket:
+            if socks == server:
+                data = recv_msg(socks)
+                plyr = data['Player']
+                if(data["Action"] == 'Start'):
+                    is_move = True
+                elif(data["Action"] == 'Jump'):
+                    birds[BIRD_1OR2[plyr]].jump()
+                elif(data["Action"] == "Height Pipe"):
+                    height_pipe = data['Value']
         
         if (add_pipe):
             score += 1
-            pipes.append(Pipe(600))
+            pipes.append(Pipe(600, height_pipe))
         
         for r in rem:
             pipes.remove(r)

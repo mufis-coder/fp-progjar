@@ -4,6 +4,7 @@ import sys
 import threading
 import pickle
 import time
+import random
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -14,8 +15,8 @@ server.listen(100)
 list_of_clients = []
 client_types = {}
 
-def data_send(player, msg):
-    data_dict = {player: msg}
+def data_send(player, act, val=None):
+    data_dict = {"Player":player, "Action":act, "Value":val}
     data = pickle.dumps(data_dict)
     return data
 
@@ -27,6 +28,8 @@ def clientthread(conn, addr):
             if message:
                 if message:
                     msg_ori = pickle.loads(message)
+                    if(msg_ori['Action'] == "Add Pipe"):
+                        broadcast(data_send(msg_ori['Player'], "Height Pipe", random.randrange(50, 450)))
                     print("print u: " + str(msg_ori))
                     broadcast(message)
             else:
@@ -51,7 +54,7 @@ while True:
     conn, addr = server.accept()
     list_of_clients.append(conn)
     if(len(list_of_clients)>=2):
-        time.sleep(5)
+        time.sleep(8)
         broadcast(data_send("Player1", "Start"))
         broadcast(data_send("Player2", "Start"))
     threading.Thread(target=clientthread, args=(conn, addr)).start()
