@@ -75,18 +75,17 @@ def main(win, clock):
 
     score = 0
 
-    # while(True):
-    #     data = {}
-    #     socket_list = [server]
-    #     read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
-    #     for socks in read_socket:
-    #         if socks == server:
-    #             data = recv_msg(socks)
-    #     if('Player1' in data and data['Player1'] == 'Start'):
-    #         break
+    while(True):
+        data = {}
+        socket_list = [server]
+        read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
+        for socks in read_socket:
+            if socks == server:
+                data = recv_msg(socks)
+        if('Player1' in data and data['Player1'] == 'Start'):
+            break
     
     run = True
-    move = False
     while(run):
         clock.tick(30)
         for event in pygame.event.get():
@@ -109,8 +108,7 @@ def main(win, clock):
                 recv_msg(socks)
         
         #move bird
-        if(move):
-            bird.move()
+        bird.move()
 
         add_pipe = False
         rem = []
@@ -124,8 +122,7 @@ def main(win, clock):
             if (pipe.x+pipe.PIPE_TOP.get_width() < 0):
                 rem.append(pipe)
             
-            if(move):
-                pipe.move()
+            pipe.move()
         
         if (add_pipe):
             score += 1
@@ -137,8 +134,7 @@ def main(win, clock):
         if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
             run = False
         
-        if(move):
-            base.move()
+        base.move()
         draw_window(win, bird, pipes, base, score)
     
     print("End Game")
