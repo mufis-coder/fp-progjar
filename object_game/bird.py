@@ -1,17 +1,13 @@
 import pygame
 import os
 
-BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), 
-			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), 
-			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
-
 class Bird:
-    IMGS = BIRD_IMGS
     MAX_ROTATION = 25
     ROT_VEL = 20
     ANIMATION_TIME = 5
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, IMGS):
+        self.IMGS = IMGS
         self.x = x
         self.y = y
         self.tilt = 0

@@ -22,13 +22,22 @@ ip_address = '127.0.0.1'
 port = 8081
 server.connect((ip_address, port))
 
+BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), 
+			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), 
+			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
+PLAYER = "Player1"
+KEYJUMP = pygame.K_SPACE
+
+POSX1 = 235
+POSY1 = 200
+POSX2 = 245
+POSY2 = 400
 WIN_WIDTH = 500
 WIN_HEIGHT = 700
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
-PLAYER = "Player1"
-KEYJUMP = pygame.K_SPACE
 
+BIRD_1OR2 = {"Player1":0, "Player2":1}
 
 def data_send(player, msg):
     data_dict = {player: msg}
@@ -50,7 +59,7 @@ def recv_msg(sock):
         # print("Exception Occured!")
         pass
 
-def draw_window(win, bird, pipes, base, score):
+def draw_window(win, birds, pipes, base, score):
     win.blit(BG_IMG, (0, 0))
 
     for pipe in pipes:
@@ -60,16 +69,17 @@ def draw_window(win, bird, pipes, base, score):
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
     base.draw(win)
-    bird.draw(win)
+    for bird in birds:
+        bird.draw(win)
 
     pygame.display.update()
 
 def main(win, clock):
 
-    posX = random.randint(230, 250)
-    posY = random.randint(100, 500)
+    # posX = random.randint(230, 250)
+    # posY = random.randint(100, 500)
 
-    bird = Bird(posX, posY)
+    birds = [Bird(POSX1, POSY1, BIRD_IMGS), Bird(POSX2, POSY2, BIRD_IMGS)]
     base = Base(630)
     pipes = [Pipe(600)]
     
@@ -91,7 +101,7 @@ def main(win, clock):
             if (event.type == pygame.KEYDOWN):
                 if (event.key == KEYJUMP):
                     send_msg(server, data_send(PLAYER, "Jump"))
-                    bird.jump()
+                    # bird.jump()
         
         # recv_msg(server)
 
@@ -102,21 +112,26 @@ def main(win, clock):
                 data = recv_msg(socks)
                 if(PLAYER in data and data[PLAYER] == 'Start'):
                     is_move = True
+                elif(PLAYER in data and data[PLAYER] == 'Jump'):
+                    birds[BIRD_1OR2[PLAYER]].jump()
+
         
         #move bird
-        bird.move(is_move)
+        for bird in birds:
+            bird.move(is_move)
 
         add_pipe = False
         rem = []
         for pipe in pipes:
-            if pipe.collide(bird):
-                run = False
-                break
-            if (not pipe.passed and pipe.x<bird.x):
-                pipe.passed = True
-                add_pipe = True
-            if (pipe.x+pipe.PIPE_TOP.get_width() < 0):
-                rem.append(pipe)
+            for bird in birds:
+                if pipe.collide(bird):
+                    run = False
+                    break
+                if (not pipe.passed and pipe.x<bird.x):
+                    pipe.passed = True
+                    add_pipe = True
+                if (pipe.x+pipe.PIPE_TOP.get_width() < 0):
+                    rem.append(pipe)
             
             pipe.move(is_move)
         
@@ -127,11 +142,14 @@ def main(win, clock):
         for r in rem:
             pipes.remove(r)
         
-        if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
+        for bird in birds:
+            if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
+                birds.remove(bird)
+        if len(birds) <=0:
             run = False
         
         base.move(is_move)
-        draw_window(win, bird, pipes, base, score)
+        draw_window(win, birds, pipes, base, score)
     
     print("End Game")
     send_msg(server, data_send(PLAYER, "End"))
