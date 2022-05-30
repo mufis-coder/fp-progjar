@@ -17,10 +17,11 @@ def clientthread(conn, addr):
     global game_datas
     while True:
         try:
-            message = conn.recv(2048).decode()
+            message = conn.recv(2048)
             if message:
                 if message:
-                    print(message)
+                    msg_ori = pickle.loads(message)
+                    print("print u: " + str(msg_ori))
             else:
                 remove(conn)
         except:

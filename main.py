@@ -27,8 +27,13 @@ BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
 
 
+def data_send(player, msg):
+    data_dict = {player: msg}
+    data = pickle.dumps(data_dict)
+    return data
+
 def send_msg(sock, data):
-    sock.send(data.encode())
+    sock.send(data)
     # sys.stdout.write(data)
     sys.stdout.flush()
 
@@ -80,7 +85,7 @@ def main(win, clock):
             
             if (event.type == pygame.KEYDOWN):
                 if (event.key == pygame.K_UP):
-                    send_msg(server, "jump")
+                    send_msg(server, data_send("Player1", "Jump"))
                     bird.jump()
         
         #move bird
@@ -119,8 +124,7 @@ if __name__ == "__main__":
     
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     clock = pygame.time.Clock()
-
-    Thread(target=send_msg, args=(server,)).start()
+    Thread(target=send_msg, args=(server,data_send("Player1", "Init Thread"))).start()
     Thread(target=recv_msg, args=(server,)).start()
 
     main(win,clock)
