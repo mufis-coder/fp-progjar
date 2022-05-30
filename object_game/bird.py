@@ -26,24 +26,25 @@ class Bird:
         self.tick_count = 0 
         self.height = self.y
     
-    def move(self):
-        self.tick_count += 1
+    def move(self, is_move):
+        if(is_move):
+            self.tick_count += 1
 
-        d =  self.vel*self.tick_count + 1.5*self.tick_count**2
+            d =  self.vel*self.tick_count + 1.5*self.tick_count**2
 
-        if d>=16:
-            d = 16
-        if d<0:
-            d -= 2
-        
-        self.y += d
+            if d>=16:
+                d = 16
+            if d<0:
+                d -= 2
+            
+            self.y += d
 
-        if(d<0 or self.y<self.height + 50):
-            if(self.tilt < self.MAX_ROTATION):
-                self.tilt = self.MAX_ROTATION
-        else:
-            if(self.tilt > -90):
-                self.tilt -= self.ROT_VEL
+            if(d<0 or self.y<self.height + 50):
+                if(self.tilt < self.MAX_ROTATION):
+                    self.tilt = self.MAX_ROTATION
+            else:
+                if(self.tilt > -90):
+                    self.tilt -= self.ROT_VEL
     
     def draw(self, win):
         self.img_count += 1

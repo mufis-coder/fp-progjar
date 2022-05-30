@@ -36,6 +36,7 @@ def clientthread(conn, addr):
 
 def broadcast(message):
     for client in list_of_clients:
+        print(list_of_clients)
         try:
             client.send(message)
         except:
@@ -51,7 +52,7 @@ while True:
     conn, addr = server.accept()
     list_of_clients.append(conn)
     if(len(list_of_clients)==2):
-        time.sleep(2)
+        time.sleep(5)
         broadcast(data_send("Player1", "Start"))
         broadcast(data_send("Player2", "Start"))
     threading.Thread(target=clientthread, args=(conn, addr)).start()

@@ -26,6 +26,8 @@ WIN_WIDTH = 500
 WIN_HEIGHT = 700
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
+PLAYER = "Player1"
+KEYJUMP = pygame.K_SPACE
 
 
 def data_send(player, msg):
@@ -42,6 +44,7 @@ def recv_msg(sock):
     try:
         data = sock.recv(2048)
         data_pick = pickle.loads(data)
+        print(data_pick)
         return data_pick
     except:
         # print("Exception Occured!")
@@ -74,19 +77,9 @@ def main(win, clock):
     # clock = pygame.time.Clock()
 
     score = 0
-
-    # while(True):
-    #     data = {}
-    #     socket_list = [server]
-    #     read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
-    #     for socks in read_socket:
-    #         if socks == server:
-    #             data = recv_msg(socks)
-    #     if('Player1' in data and data['Player1'] == 'Start'):
-    #         break
     
     run = True
-    move = False
+    is_move = False
     while(run):
         clock.tick(30)
         for event in pygame.event.get():
@@ -96,8 +89,8 @@ def main(win, clock):
                 quit()
             
             if (event.type == pygame.KEYDOWN):
-                if (event.key == pygame.K_UP):
-                    send_msg(server, data_send("Player1", "Jump"))
+                if (event.key == KEYJUMP):
+                    send_msg(server, data_send(PLAYER, "Jump"))
                     bird.jump()
         
         # recv_msg(server)
@@ -106,11 +99,12 @@ def main(win, clock):
         read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
         for socks in read_socket:
             if socks == server:
-                recv_msg(socks)
+                data = recv_msg(socks)
+                if(PLAYER in data and data[PLAYER] == 'Start'):
+                    is_move = True
         
         #move bird
-        if(move):
-            bird.move()
+        bird.move(is_move)
 
         add_pipe = False
         rem = []
@@ -124,8 +118,7 @@ def main(win, clock):
             if (pipe.x+pipe.PIPE_TOP.get_width() < 0):
                 rem.append(pipe)
             
-            if(move):
-                pipe.move()
+            pipe.move(is_move)
         
         if (add_pipe):
             score += 1
@@ -137,19 +130,18 @@ def main(win, clock):
         if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
             run = False
         
-        if(move):
-            base.move()
+        base.move(is_move)
         draw_window(win, bird, pipes, base, score)
     
     print("End Game")
-    send_msg(server, data_send("Player1", "End"))
+    send_msg(server, data_send(PLAYER, "End"))
     server.close()
 
 if __name__ == "__main__":
     
     win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     clock = pygame.time.Clock()
-    Thread(target=send_msg, args=(server,data_send("Player1", "Init Thread"))).start()
+    Thread(target=send_msg, args=(server,data_send(PLAYER, "Init Thread"))).start()
     Thread(target=recv_msg, args=(server,)).start()
 
     main(win,clock)

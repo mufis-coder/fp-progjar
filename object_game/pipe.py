@@ -26,8 +26,9 @@ class Pipe:
         self.top = self.height - self.PIPE_TOP.get_height()
         self.bottom = self.height + self.GAP
     
-    def move(self):
-        self.x -= self.VEL
+    def move(self, is_move):
+        if(is_move):
+            self.x -= self.VEL
     
     def draw(self, win):
         win.blit(self.PIPE_TOP, (self.x, self.top))
