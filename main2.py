@@ -124,8 +124,8 @@ def main(win, clock):
             
             pipe.move(is_move)
 
-        if(add_pipe):
-            data_send(PLAYER, "Add Pipe")
+        # if(add_pipe):
+        #     send_msg(server, data_send(PLAYER, "Add Pipe"))
 
         socket_list = [server]
         read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
