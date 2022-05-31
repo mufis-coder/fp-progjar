@@ -9,6 +9,7 @@ import select
 import sys
 import pickle
 from threading import Thread
+from datetime import date
 
 sys.path.append('/object_game/')
 pygame.init()
@@ -38,6 +39,64 @@ BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
 
 BIRD_1OR2 = {"Player1":0, "Player2":1}
+
+font = pygame.font.SysFont("comicsans", 40)
+smallfont = pygame.font.SysFont("comicsans", 14)
+slategrey = (112, 128, 144)
+lightgrey = (165, 175, 185)
+blackish = (10, 10, 10)
+white = (255, 255, 255)
+black = (0, 0, 0)
+
+win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+clock = pygame.time.Clock()
+
+# Function to create a button
+def create_button(x, y, width, height, hovercolor, defaultcolor):
+    mouse = pygame.mouse.get_pos()
+    # Mouse get pressed can run without an integer, but needs a 3 or 5 to indicate how many buttons
+    click = pygame.mouse.get_pressed(3)
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        pygame.draw.rect(win, hovercolor, (x, y, width, height))
+        if click[0] == 1:
+            return True
+    else:
+        pygame.draw.rect(win, defaultcolor, (x, y, width, height))
+
+
+# Start menu returns true until we click the Start button
+def start_menu():
+    startText = STAT_FONT.render("FLAPPY BIRD", True, slategrey)
+    today = date.today()
+    todayText = "Today is " + today.strftime("%A") + ", " + today.strftime("%B") + " " + today.strftime("%d") + \
+                ", " + today.strftime("%Y")
+    todayText = smallfont.render(todayText, True, slategrey)
+
+    while True:
+        win.blit(BG_IMG, (0, 0))
+        # (image variable, (left, top))
+        win.blit(todayText, (5, 10))
+        # The centered Text
+        win.blit(startText, ((WIN_WIDTH - startText.get_width()) / 2, 100))
+
+        # start button (left, top, width, height)
+        start_button = create_button(200, WIN_HEIGHT/2 - 8 , 120, 40, lightgrey, slategrey)
+
+        if start_button:
+            main(win, clock)
+
+        # Start button text
+        startbuttontext = font.render("START", True, blackish)
+        win.blit(startbuttontext, (210, WIN_HEIGHT/2))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.update()
+        clock.tick(15)
+        return True
 
 def data_send(player, act, val=None):
     data_dict = {"Player":player, "Action":act, "Value":val}
@@ -91,6 +150,7 @@ def main(win, clock):
     run = True
     is_move = False
     while(run):
+        win.fill((0, 0, 0))
         clock.tick(30)
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
@@ -162,12 +222,27 @@ def main(win, clock):
 
 if __name__ == "__main__":
     
-    win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-    clock = pygame.time.Clock()
+    # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+    # clock = pygame.time.Clock()
     Thread(target=send_msg, args=(server,data_send(PLAYER, "Init Thread"))).start()
     Thread(target=recv_msg, args=(server,)).start()
 
-    main(win,clock)
+    # main(win,clock)
+
+    while True:
+        
+        start_menu()
+
+        # Thread(target=send_msg, args=(server,data_send(PLAYER, "Init Thread"))).start()
+        # Thread(target=recv_msg, args=(server,)).start()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.update()
+        clock.tick(15)
 
     # menu = pygame_menu.Menu('Welcome', 400, 300,
     #                     theme=pygame_menu.themes.THEME_BLUE)
