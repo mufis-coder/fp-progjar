@@ -98,6 +98,7 @@ def start_menu():
         clock.tick(15)
         return True
 
+
 def data_send(player, act, val=None):
     data_dict = {"Player":player, "Action":act, "Value":val}
     data = pickle.dumps(data_dict)
@@ -128,7 +129,7 @@ def draw_window(win, birds, pipes, base, score):
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
     base.draw(win)
-    for bird in birds:
+    for _, bird in birds.items():
         bird.draw(win)
 
     pygame.display.update()
@@ -138,7 +139,7 @@ def main(win, clock):
     # posX = random.randint(230, 250)
     # posY = random.randint(100, 500)
     height_pipe = 75
-    birds = [Bird(POSX1, POSY1, BIRD_IMGS), Bird(POSX2, POSY2, BIRD_IMGS)]
+    birds = {0:Bird(POSX1, POSY1, BIRD_IMGS), 1:Bird(POSX2, POSY2, BIRD_IMGS)}
     base = Base(630)
     pipes = [Pipe(600, height_pipe)]
     
@@ -166,13 +167,13 @@ def main(win, clock):
         # recv_msg(server)
 
         #move bird
-        for bird in birds:
+        for _, bird in birds.items():
             bird.move(is_move)
 
         rem = []
         add_pipe = False
         for pipe in pipes:
-            for bird in birds:
+            for _, bird in birds.items():
                 if pipe.collide(bird):
                     run = False
                     break
@@ -184,8 +185,8 @@ def main(win, clock):
             
             pipe.move(is_move)
 
-        # if(add_pipe):
-        #     send_msg(server, data_send(PLAYER, "Add Pipe"))
+        if(add_pipe):
+            send_msg(server, data_send(PLAYER, "Add Pipe"))
 
         socket_list = [server]
         read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
@@ -207,9 +208,9 @@ def main(win, clock):
         for r in rem:
             pipes.remove(r)
         
-        for bird in birds:
+        for _, bird in birds.items():
             if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
-                birds.remove(bird)
+                birds = {key:val for key, val in birds.items() if val != bird}
         if len(birds) <=0:
             run = False
         
@@ -227,7 +228,7 @@ if __name__ == "__main__":
     Thread(target=send_msg, args=(server,data_send(PLAYER, "Init Thread"))).start()
     Thread(target=recv_msg, args=(server,)).start()
 
-    # main(win,clock)
+    # start_menu()
 
     while True:
         
@@ -243,6 +244,8 @@ if __name__ == "__main__":
 
         pygame.display.update()
         clock.tick(15)
+
+    # main(win,clock)
 
     # menu = pygame_menu.Menu('Welcome', 400, 300,
     #                     theme=pygame_menu.themes.THEME_BLUE)
