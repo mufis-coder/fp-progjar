@@ -19,8 +19,10 @@ from object_game.bird import Bird
 from object_game.base import Base
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ip_address = '127.0.0.1'
-port = 8081
+# ip_address = '127.0.0.1'
+# port = 8081
+ip_address = '18.142.236.125'
+port = 5555
 server.connect((ip_address, port))
 
 PLAYER = "Player1"
