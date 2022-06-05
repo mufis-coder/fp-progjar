@@ -23,9 +23,6 @@ ip_address = '127.0.0.1'
 port = 8081
 server.connect((ip_address, port))
 
-BIRD_IMGS = [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird1.png"))), 
-			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird2.png"))), 
-			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bird3.png")))]
 PLAYER = "Player2"
 KEYJUMP = pygame.K_UP
 
@@ -37,6 +34,13 @@ WIN_WIDTH = 500
 WIN_HEIGHT = 700
 BG_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "bg.png")))
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
+
+BIRD_IMGS = [[pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/red", "bird1.png"))), 
+			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/red", "bird2.png"))), 
+			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/red", "bird3.png")))], 
+            [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/black", "bird1.png"))), 
+			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/black", "bird2.png"))), 
+			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/black", "bird3.png")))]]
 
 BIRD_1OR2 = {"Player1":0, "Player2":1}
 
@@ -139,7 +143,7 @@ def main(win, clock):
     # posX = random.randint(230, 250)
     # posY = random.randint(100, 500)
     height_pipe = 75
-    birds = {0:Bird(POSX1, POSY1, BIRD_IMGS), 1:Bird(POSX2, POSY2, BIRD_IMGS)}
+    birds = {0:Bird(POSX1, POSY1, BIRD_IMGS[0]), 1:Bird(POSX2, POSY2, BIRD_IMGS[1])}
     base = Base(630)
     pipes = [Pipe(600, height_pipe)]
     
