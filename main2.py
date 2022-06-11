@@ -210,7 +210,8 @@ def main(win, clock):
                         is_move = True
                     #Handle when server broadcast "Jump"
                     elif(data["Action"] == 2):
-                        birds[plyr].jump()
+                        if(plyr in birds):
+                            birds[plyr].jump()
                     #Handle when server broadcast "Height Pipe"
                     elif(data["Action"] == 4):
                         height_pipe = data['Value']
@@ -234,11 +235,11 @@ def main(win, clock):
         if len(birds) <=0:
             run = False
         
-        sinc_y_bird += 1
-        if(sinc_y_bird>40):
-            sinc_y_bird = 0
-            if(PLAYER in birds):
-                send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
+        # sinc_y_bird += 1
+        # if(sinc_y_bird>40):
+        #     sinc_y_bird = 0
+        #     if(PLAYER in birds):
+        #         send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
 
         base.move(is_move)
         draw_window(win, birds, pipes, base, score)

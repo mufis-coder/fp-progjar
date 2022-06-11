@@ -129,8 +129,11 @@ def draw_window(win, birds, pipes, base, score, player=PLAYER, sinc_height=0, si
     for pipe in pipes:
         pipe.draw(win)
 
-    text = STAT_FONT.render("Score: " + str(score), 1, (255, 255, 255))
-    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
+    text = STAT_FONT.render("Score 1: " + str(score), 1, (255, 255, 255))
+    win.blit(text, (WIN_WIDTH - 10 - 3*text.get_width(), 10))
+
+    text = STAT_FONT.render("Score 2: " + str(score), 1, (255, 255, 255))
+    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))    
 
     base.draw(win)
     if(sinc_height_status==False):
@@ -210,7 +213,8 @@ def main(win, clock):
                         is_move = True
                     #Handle when server broadcast "Jump"
                     elif(data["Action"] == 2):
-                        birds[plyr].jump()
+                        if(plyr in birds):
+                            birds[plyr].jump()
                     #Handle when server broadcast "Height Pipe"
                     elif(data["Action"] == 4):
                         height_pipe = data['Value']
@@ -234,11 +238,11 @@ def main(win, clock):
         if len(birds) <=0:
             run = False
         
-        sinc_y_bird += 1
-        if(sinc_y_bird>40):
-            sinc_y_bird = 0
-            if(PLAYER in birds):
-                send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
+        # sinc_y_bird += 1
+        # if(sinc_y_bird>40):
+        #     sinc_y_bird = 0
+        #     if(PLAYER in birds):
+        #         send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
 
         base.move(is_move)
         draw_window(win, birds, pipes, base, score)
