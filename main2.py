@@ -123,14 +123,17 @@ def recv_msg(sock):
         # print("Exception Occured!")
         pass
 
-def draw_window(win, birds, pipes, base, score, player=PLAYER, sinc_height=0, sinc_height_status=False):
+def draw_window(win, birds, pipes, base, scores, player=PLAYER, sinc_height=0, sinc_height_status=False):
     win.blit(BG_IMG, (0, 0))
 
     for pipe in pipes:
         pipe.draw(win)
 
-    text = STAT_FONT.render("Score: " + str(score), 1, (255, 255, 255))
-    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
+    text = STAT_FONT.render("Score 1: " + str(scores[0]), 1, (255, 255, 255))
+    win.blit(text, (WIN_WIDTH - 10 - 3*text.get_width(), 10))
+
+    text = STAT_FONT.render("Score 2: " + str(scores[1]), 1, (255, 255, 255))
+    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))    
 
     base.draw(win)
     if(sinc_height_status==False):
@@ -155,7 +158,7 @@ def main(win, clock):
 
     send_msg(server, data_send(PLAYER, 1))
 
-    score = 0
+    scores = {0:0, 1:0}
 
     run = True
     is_move = False
@@ -219,11 +222,12 @@ def main(win, clock):
                     elif(data["Action"] == 5):
                         if(plyr in birds and 
                                 abs(birds[plyr].y - data['Value'])>10):
-                            draw_window(win, birds, pipes, base, score, plyr, data['Value'], True)
+                            draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
 
         
         if (add_pipe):
-            score += 1
+            for key, _ in birds.items():
+                scores[key] += 1
             pipes.append(Pipe(600, height_pipe))
         
         for r in rem:
@@ -242,7 +246,7 @@ def main(win, clock):
         #         send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
 
         base.move(is_move)
-        draw_window(win, birds, pipes, base, score)
+        draw_window(win, birds, pipes, base, scores)
     
     send_msg(server, data_send(PLAYER, -1))
 
