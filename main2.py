@@ -116,7 +116,7 @@ def recv_msg(sock):
     try:
         data = sock.recv(2048)
         data_pick = pickle.loads(data)
-        print(data_pick)
+        # print(data_pick)
         return data_pick
     except:
         # print("Exception Occured!")
@@ -202,7 +202,7 @@ def main(win, clock):
                 if pipe.collide(bird):
                     run = False
                     break
-                if (not pipe.passed and pipe.x<bird.x):
+                if (not pipe.passed and 2*pipe.x<bird.x):
                     pipe.passed = True
                     add_pipe = True
                 if (pipe.x+pipe.PIPE_TOP.get_width() < 0):
@@ -210,8 +210,8 @@ def main(win, clock):
             
             pipe.move(is_move)
 
-        # if(add_pipe):
-        #     send_msg(server, data_send(PLAYER, 3))
+        if(PLAYER==0 and add_pipe):
+            send_msg(server, data_send(PLAYER, 3))
 
         socket_list = [server]
         read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
@@ -240,7 +240,7 @@ def main(win, clock):
                                 abs(birds[plyr].y - data['Value'])>10):
                             draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
         
-        if (add_pipe):
+        if(add_pipe):
             for key, _ in birds.items():
                 scores[key] += 1
             pipes.append(Pipe(600, height_pipe))
