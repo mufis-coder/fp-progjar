@@ -205,13 +205,17 @@ def main(win, clock):
                 data = recv_msg(socks)
                 if(data):
                     plyr = data['Player']
-                    if(data["Action"] == 'Start'):
+                    #Handle when server broadcast "Start"
+                    if(data["Action"] == 1):
                         is_move = True
-                    elif(data["Action"] == 'Jump'):
+                    #Handle when server broadcast "Jump"
+                    elif(data["Action"] == 2):
                         birds[plyr].jump()
-                    elif(data["Action"] == "Height Pipe"):
+                    #Handle when server broadcast "Height Pipe"
+                    elif(data["Action"] == 4):
                         height_pipe = data['Value']
-                    elif(data["Action"] == "Bird Height"):
+                    #Handle when server broadcast "Bird Height"
+                    elif(data["Action"] == 5):
                         if(plyr in birds and 
                                 abs(birds[plyr].y - data['Value'])>10):
                             draw_window(win, birds, pipes, base, score, plyr, data['Value'], True)

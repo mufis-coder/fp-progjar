@@ -30,16 +30,20 @@ def clientthread(conn, addr):
             if message:
                 if message:
                     msg_ori = pickle.loads(message)
+                    #Handle when user want "Add Pipe"
                     if(msg_ori['Action'] == 3):
                         broadcast(data_send(msg_ori['Player'], 4, random.randrange(50, 450)))
+                    #Handle when user want "Start"
                     elif(msg_ori['Action'] == 1):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
                             time.sleep(5)
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
+                    #Handle when user want "End"
                     elif(msg_ori['Action'] == -1):
                         clients_login.remove(msg_ori['Player'])
+                    #Handle when user want "Jump", "Bird Height"
                     else:
                         broadcast(message)
                     print("print u: " + str(msg_ori))
