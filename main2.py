@@ -2,14 +2,13 @@ import sys
 from numpy import NaN
 import pygame
 import os
-import random
-import pygame_menu
 import socket
 import select
 import sys
 import pickle
 from threading import Thread
 from datetime import date
+import time
 
 sys.path.append('/object_game/')
 pygame.init()
@@ -136,7 +135,7 @@ def draw_window(win, birds, pipes, base, scores,
     text = STAT_FONT.render("Score 2: " + str(scores[1]), 1, (255, 255, 255))
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
-    if(start_in!=-1):
+    if(start_in != -1):
         text = STAT_FONT.render("Start in " + str(start_in), 1, (255, 255, 255))
         win.blit(text, (int(WIN_WIDTH/2), int(WIN_HEIGHT/2)))
 
@@ -216,8 +215,10 @@ def main(win, clock):
                     #Handle when server broadcast "Start in"
                     if(data["Action"] == 0):
                         draw_window(win, birds, pipes, base, scores, data["Value"])
+                        time.sleep(0.8)
                     #Handle when server broadcast "Start"
                     elif(data["Action"] == 1):
+                        print("MOVEEE")
                         is_move = True
                     #Handle when server broadcast "Jump"
                     elif(data["Action"] == 2):

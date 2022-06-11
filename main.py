@@ -218,6 +218,7 @@ def main(win, clock):
                         time.sleep(0.8)
                     #Handle when server broadcast "Start"
                     elif(data["Action"] == 1):
+                        print("MOVEEE")
                         is_move = True
                     #Handle when server broadcast "Jump"
                     elif(data["Action"] == 2):

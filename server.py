@@ -38,13 +38,17 @@ def clientthread(conn, addr):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
                             sec = 5
-                            while True:
+
+                            for _ in range(0, 5):
                                 time.sleep(0.9)
                                 broadcast(data_send(0, 0, sec))
                                 broadcast(data_send(1, 0, sec))
                                 sec -= 1
+                                print("sec: " + str(sec))
                                 if sec <= 0:
                                     break
+
+                            print("MOVEEE")
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
                     #Handle when user want "End"
