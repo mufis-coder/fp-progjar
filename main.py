@@ -25,7 +25,7 @@ ip_address = '13.229.230.226'
 port = 5555
 server.connect((ip_address, port))
 
-PLAYER = "Player1"
+PLAYER = 0
 KEYJUMP = pygame.K_SPACE
 
 POSX1 = 235
@@ -43,8 +43,6 @@ BIRD_IMGS = [[pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/bird
             [pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/black", "bird1.png"))), 
 			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/black", "bird2.png"))), 
 			pygame.transform.scale2x(pygame.image.load(os.path.join("imgs/birds/black", "bird3.png")))]]
-
-BIRD_1OR2 = {"Player1":0, "Player2":1}
 
 font = pygame.font.SysFont("comicsans", 40)
 smallfont = pygame.font.SysFont("comicsans", 14)
@@ -119,13 +117,13 @@ def recv_msg(sock):
     try:
         data = sock.recv(2048)
         data_pick = pickle.loads(data)
-        print(data_pick)
+        # print(data_pick)
         return data_pick
     except:
         # print("Exception Occured!")
         pass
 
-def draw_window(win, birds, pipes, base, score):
+def draw_window(win, birds, pipes, base, score, player=PLAYER, sinc_height=0, sinc_height_status=False):
     win.blit(BG_IMG, (0, 0))
 
     for pipe in pipes:
@@ -135,8 +133,11 @@ def draw_window(win, birds, pipes, base, score):
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
     base.draw(win)
-    for _, bird in birds.items():
-        bird.draw(win)
+    if(sinc_height_status==False):
+        for _, bird in birds.items():
+            bird.draw(win)
+    else:
+        birds[BIRD_1OR2[player]].draw_height_sinc(win, sinc_height)
 
     pygame.display.update()
 
@@ -152,12 +153,13 @@ def main(win, clock):
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     # clock = pygame.time.Clock()
 
-    send_msg(server, data_send(PLAYER, "Start"))
+    send_msg(server, data_send(PLAYER, 1))
 
     score = 0
 
     run = True
     is_move = False
+    sinc_y_bird = 0
     while(run):
         win.fill((0, 0, 0))
         clock.tick(30)
@@ -169,7 +171,7 @@ def main(win, clock):
             
             if (event.type == pygame.KEYDOWN):
                 if (event.key == KEYJUMP):
-                    send_msg(server, data_send(PLAYER, "Jump"))
+                    send_msg(server, data_send(PLAYER, 2))
                     # bird.jump()
 
         # recv_msg(server)
@@ -194,20 +196,26 @@ def main(win, clock):
             pipe.move(is_move)
 
         if(add_pipe):
-            send_msg(server, data_send(PLAYER, "Add Pipe"))
+            send_msg(server, data_send(PLAYER, 3))
 
         socket_list = [server]
         read_socket, write_socket, error_socket = select.select(socket_list, [], [], 0.01)
         for socks in read_socket:
             if socks == server:
                 data = recv_msg(socks)
-                plyr = data['Player']
-                if(data["Action"] == 'Start'):
-                    is_move = True
-                elif(data["Action"] == 'Jump'):
-                    birds[BIRD_1OR2[plyr]].jump()
-                elif(data["Action"] == "Height Pipe"):
-                    height_pipe = data['Value']
+                if(data):
+                    plyr = data['Player']
+                    if(data["Action"] == 'Start'):
+                        is_move = True
+                    elif(data["Action"] == 'Jump'):
+                        birds[BIRD_1OR2[plyr]].jump()
+                    elif(data["Action"] == "Height Pipe"):
+                        height_pipe = data['Value']
+                    elif(data["Action"] == "Bird Height"):
+                        if(BIRD_1OR2[plyr] in birds and 
+                                abs(birds[BIRD_1OR2[plyr]].y - data['Value'])>10):
+                            draw_window(win, birds, pipes, base, score, plyr, data['Value'], True)
+
         
         if (add_pipe):
             score += 1
@@ -222,17 +230,22 @@ def main(win, clock):
         if len(birds) <=0:
             run = False
         
+        sinc_y_bird += 1
+        if(sinc_y_bird>40):
+            sinc_y_bird = 0
+            if(PLAYER in birds):
+                send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
+
         base.move(is_move)
         draw_window(win, birds, pipes, base, score)
     
-    print("End Game")
-    send_msg(server, data_send(PLAYER, "End"))
+    send_msg(server, data_send(PLAYER, -1))
 
 if __name__ == "__main__":
     
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     # clock = pygame.time.Clock()
-    Thread(target=send_msg, args=(server,data_send(PLAYER, "Init Thread"))).start()
+    Thread(target=send_msg, args=(server,data_send(PLAYER, 0))).start()
     Thread(target=recv_msg, args=(server,)).start()
 
     # start_menu()

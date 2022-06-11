@@ -30,15 +30,15 @@ def clientthread(conn, addr):
             if message:
                 if message:
                     msg_ori = pickle.loads(message)
-                    if(msg_ori['Action'] == "Add Pipe"):
-                        broadcast(data_send(msg_ori['Player'], "Height Pipe", random.randrange(50, 450)))
-                    elif(msg_ori['Action'] == "Start"):
+                    if(msg_ori['Action'] == 3):
+                        broadcast(data_send(msg_ori['Player'], 4, random.randrange(50, 450)))
+                    elif(msg_ori['Action'] == 1):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
                             time.sleep(5)
-                            broadcast(data_send("Player1", "Start"))
-                            broadcast(data_send("Player2", "Start"))
-                    elif(msg_ori['Action'] == "End"):
+                            broadcast(data_send(0, 1))
+                            broadcast(data_send(1, 1))
+                    elif(msg_ori['Action'] == -1):
                         clients_login.remove(msg_ori['Player'])
                     else:
                         broadcast(message)
