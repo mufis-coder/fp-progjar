@@ -45,6 +45,6 @@ class Pipe:
         b_point = bird_mask.overlap(bottom_mask, bottom_offset)
         t_point = bird_mask.overlap(top_mask, top_offset)
         
-        if t_point or b_point:
-            return True
+        # if t_point or b_point:
+        #     return True
         return False

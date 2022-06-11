@@ -19,10 +19,10 @@ from object_game.bird import Bird
 from object_game.base import Base
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = '18.142.236.125'
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = '18.139.217.255'
+# port = 5555
 server.connect((ip_address, port))
 
 PLAYER = "Player2"
@@ -152,8 +152,10 @@ def main(win, clock):
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     # clock = pygame.time.Clock()
 
+    send_msg(server, data_send(PLAYER, "Start"))
+
     score = 0
-    
+
     run = True
     is_move = False
     while(run):
@@ -225,7 +227,6 @@ def main(win, clock):
     
     print("End Game")
     send_msg(server, data_send(PLAYER, "End"))
-    server.close()
 
 if __name__ == "__main__":
     
@@ -250,6 +251,8 @@ if __name__ == "__main__":
 
         pygame.display.update()
         clock.tick(15)
+    
+    server.close()
 
     # main(win,clock)
 

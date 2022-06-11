@@ -8,14 +8,14 @@ import random
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = ''
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = ''
+# port = 5555
 server.bind((ip_address, port))
 server.listen(100)
 list_of_clients = []
-client_types = {}
+clients_login = set()
 
 def data_send(player, act, val=None):
     data_dict = {"Player":player, "Action":act, "Value":val}
@@ -32,8 +32,18 @@ def clientthread(conn, addr):
                     msg_ori = pickle.loads(message)
                     if(msg_ori['Action'] == "Add Pipe"):
                         broadcast(data_send(msg_ori['Player'], "Height Pipe", random.randrange(50, 450)))
+                    elif(msg_ori['Action'] == "Start"):
+                        clients_login.add(msg_ori['Player'])
+                        if(len(clients_login)==2):
+                            time.sleep(5)
+                            broadcast(data_send("Player1", "Start"))
+                            broadcast(data_send("Player2", "Start"))
+                    elif(msg_ori['Action'] == "End"):
+                        clients_login.remove(msg_ori['Player'])
+                    else:
+                        broadcast(message)
                     print("print u: " + str(msg_ori))
-                    broadcast(message)
+                    print("Client login: " + str(clients_login))
             else:
                 remove(conn)
         except:
@@ -55,10 +65,6 @@ def remove(connection):
 while True:
     conn, addr = server.accept()
     list_of_clients.append(conn)
-    if(len(list_of_clients)>=2):
-        time.sleep(8)
-        broadcast(data_send("Player1", "Start"))
-        broadcast(data_send("Player2", "Start"))
     threading.Thread(target=clientthread, args=(conn, addr)).start()
 
 conn.close()
