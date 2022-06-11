@@ -10,6 +10,9 @@ from threading import Thread
 from datetime import date
 import time
 
+PLAYER = 1
+KEYJUMP = pygame.K_UP
+
 sys.path.append('/object_game/')
 pygame.init()
 
@@ -23,9 +26,6 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ip_address = '13.229.230.226'
 port = 5555
 server.connect((ip_address, port))
-
-PLAYER = 1
-KEYJUMP = pygame.K_UP
 
 POSX1 = 235
 POSY1 = 200
@@ -116,7 +116,7 @@ def recv_msg(sock):
     try:
         data = sock.recv(2048)
         data_pick = pickle.loads(data)
-        # print(data_pick)
+        print(data_pick)
         return data_pick
     except:
         # print("Exception Occured!")
