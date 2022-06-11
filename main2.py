@@ -215,7 +215,7 @@ def main(win, clock):
                     plyr = data['Player']
                     #Handle when server broadcast "Start in"
                     if(data["Action"] == 0):
-                        draw_window(win, birds, pipes, base, scores, start_in)
+                        draw_window(win, birds, pipes, base, scores, data["Value"])
                     #Handle when server broadcast "Start"
                     elif(data["Action"] == 1):
                         is_move = True

@@ -37,13 +37,13 @@ def clientthread(conn, addr):
                     elif(msg_ori['Action'] == 1):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
-                            sec = 0
+                            sec = 5
                             while True:
                                 time.sleep(0.9)
-                                sec += 1
                                 broadcast(data_send(0, 0, sec))
                                 broadcast(data_send(1, 0, sec))
-                                if sec >= 5:
+                                sec -= 1
+                                if sec <= 0:
                                     break
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
