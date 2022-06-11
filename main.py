@@ -136,6 +136,9 @@ def draw_window(win, birds, pipes, base, scores,
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
     if(start_in != -1):
+        if(start_in == -2):
+            text = STAT_FONT.render("Wait for Other Player" + str(start_in), 1, (255, 255, 255))
+            win.blit(text, (int(WIN_WIDTH/2), int(WIN_HEIGHT/2)))
         text = STAT_FONT.render("Start in " + str(start_in), 1, (255, 255, 255))
         win.blit(text, (int(WIN_WIDTH/2), int(WIN_HEIGHT/2)))
 
@@ -218,7 +221,6 @@ def main(win, clock):
                         time.sleep(0.8)
                     #Handle when server broadcast "Start"
                     elif(data["Action"] == 1):
-                        print("MOVEEE")
                         is_move = True
                     #Handle when server broadcast "Jump"
                     elif(data["Action"] == 2):

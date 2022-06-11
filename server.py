@@ -37,17 +37,14 @@ def clientthread(conn, addr):
                     elif(msg_ori['Action'] == 1):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
-
-                            time.sleep(0.9)
-                            broadcast(data_send(0, 0, 3))
-                            time.sleep(0.9)
-                            broadcast(data_send(0, 0, 2))
-                            time.sleep(0.9)
-                            broadcast(data_send(0, 0, 1))
-
-                            print(pickle.loads(data_send(0, 1)))
+                            for i in [5,4,3,2,1]:
+                                time.sleep(0.9)
+                                broadcast(data_send(0, 0, i))
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
+                        else:
+                            time.sleep(0.9)
+                            broadcast(data_send(0, 0, -2))
                     #Handle when user want "End"
                     elif(msg_ori['Action'] == -1):
                         clients_login.remove(msg_ori['Player'])
