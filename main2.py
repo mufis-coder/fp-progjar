@@ -137,7 +137,7 @@ def draw_window(win, birds, pipes, base, score, player=PLAYER, sinc_height=0, si
         for _, bird in birds.items():
             bird.draw(win)
     else:
-        birds[BIRD_1OR2[player]].draw_height_sinc(win, sinc_height)
+        birds[player].draw_height_sinc(win, sinc_height)
 
     pygame.display.update()
 
@@ -208,12 +208,12 @@ def main(win, clock):
                     if(data["Action"] == 'Start'):
                         is_move = True
                     elif(data["Action"] == 'Jump'):
-                        birds[BIRD_1OR2[plyr]].jump()
+                        birds[plyr].jump()
                     elif(data["Action"] == "Height Pipe"):
                         height_pipe = data['Value']
                     elif(data["Action"] == "Bird Height"):
-                        if(BIRD_1OR2[plyr] in birds and 
-                                abs(birds[BIRD_1OR2[plyr]].y - data['Value'])>10):
+                        if(plyr in birds and 
+                                abs(birds[plyr].y - data['Value'])>10):
                             draw_window(win, birds, pipes, base, score, plyr, data['Value'], True)
 
         
