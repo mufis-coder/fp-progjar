@@ -40,15 +40,12 @@ def clientthread(conn, addr):
 
                             time.sleep(0.9)
                             broadcast(data_send(0, 0, 3))
-                            broadcast(data_send(1, 0, 3))
                             time.sleep(0.9)
                             broadcast(data_send(0, 0, 2))
-                            broadcast(data_send(1, 0, 2))
                             time.sleep(0.9)
                             broadcast(data_send(0, 0, 1))
-                            broadcast(data_send(1, 0, 1))
 
-                            print(data_send(0, 1))
+                            print(pickle.loads(data_send(0, 1)))
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
                     #Handle when user want "End"
