@@ -37,7 +37,14 @@ def clientthread(conn, addr):
                     elif(msg_ori['Action'] == 1):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
-                            time.sleep(5)
+                            sec = 0
+                            while True:
+                                time.sleep(0.9)
+                                sec += 1
+                                broadcast(data_send(0, 0, sec))
+                                broadcast(data_send(1, 0, sec))
+                                if sec >= 5:
+                                    break
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
                     #Handle when user want "End"

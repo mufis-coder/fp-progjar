@@ -123,7 +123,8 @@ def recv_msg(sock):
         # print("Exception Occured!")
         pass
 
-def draw_window(win, birds, pipes, base, scores, player=PLAYER, sinc_height=0, sinc_height_status=False):
+def draw_window(win, birds, pipes, base, scores, 
+                    start_in=-1, player=PLAYER, sinc_height=0, sinc_height_status=False):
     win.blit(BG_IMG, (0, 0))
 
     for pipe in pipes:
@@ -133,7 +134,11 @@ def draw_window(win, birds, pipes, base, scores, player=PLAYER, sinc_height=0, s
     win.blit(text, (WIN_WIDTH - 10 - 3*text.get_width(), 10))
 
     text = STAT_FONT.render("Score 2: " + str(scores[1]), 1, (255, 255, 255))
-    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))    
+    win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
+
+    if(start_in!=-1):
+        text = STAT_FONT.render("Start in " + str(start_in), 1, (255, 255, 255))
+        win.blit(text, (int(WIN_WIDTH/2), int(WIN_HEIGHT/2)))
 
     base.draw(win)
     if(sinc_height_status==False):
@@ -208,8 +213,11 @@ def main(win, clock):
                 data = recv_msg(socks)
                 if(data):
                     plyr = data['Player']
+                    #Handle when server broadcast "Start in"
+                    if(data["Action"] == 0):
+                        draw_window(win, birds, pipes, base, scores, start_in)
                     #Handle when server broadcast "Start"
-                    if(data["Action"] == 1):
+                    elif(data["Action"] == 1):
                         is_move = True
                     #Handle when server broadcast "Jump"
                     elif(data["Action"] == 2):
@@ -222,7 +230,7 @@ def main(win, clock):
                     elif(data["Action"] == 5):
                         if(plyr in birds and 
                                 abs(birds[plyr].y - data['Value'])>10):
-                            draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
+                            draw_window(win, birds, pipes, base, scores, -1, plyr, data['Value'], True)
         
         if (add_pipe):
             for key, _ in birds.items():
