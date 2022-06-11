@@ -8,10 +8,10 @@ import random
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = ''
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = ''
+# port = 5555
 server.bind((ip_address, port))
 server.listen(100)
 list_of_clients = []
@@ -37,14 +37,12 @@ def clientthread(conn, addr):
                     elif(msg_ori['Action'] == 1):
                         clients_login.add(msg_ori['Player'])
                         if(len(clients_login)==2):
-                            for i in [5,4,3,2,1]:
+                            for x in [5,4,3,2,1]:
                                 time.sleep(0.9)
-                                broadcast(data_send(0, 0, i))
+                                broadcast(data_send(0, 0, x))
+                            time.sleep(0.9)
                             broadcast(data_send(0, 1))
                             broadcast(data_send(1, 1))
-                        else:
-                            time.sleep(0.9)
-                            broadcast(data_send(0, 0, -2))
                     #Handle when user want "End"
                     elif(msg_ori['Action'] == -1):
                         clients_login.remove(msg_ori['Player'])

@@ -21,10 +21,10 @@ from object_game.bird import Bird
 from object_game.base import Base
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = '13.229.230.226'
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = '13.229.230.226'
+# port = 5555
 server.connect((ip_address, port))
 
 POSX1 = 235
@@ -122,8 +122,7 @@ def recv_msg(sock):
         # print("Exception Occured!")
         pass
 
-def draw_window(win, birds, pipes, base, scores, 
-                    start_in=-1, player=PLAYER, sinc_height=0, sinc_height_status=False):
+def draw_window(win, birds, pipes, base, scores, player=PLAYER, sinc_height=0, sinc_height_status=False):
     win.blit(BG_IMG, (0, 0))
 
     for pipe in pipes:
@@ -135,19 +134,24 @@ def draw_window(win, birds, pipes, base, scores,
     text = STAT_FONT.render("Score 2: " + str(scores[1]), 1, (255, 255, 255))
     win.blit(text, (WIN_WIDTH - 10 - text.get_width(), 10))
 
-    if(start_in != -1):
-        if(start_in == -2):
-            text = STAT_FONT.render("Wait for Other Player" + str(start_in), 1, (255, 255, 255))
-            win.blit(text, (int(WIN_WIDTH/2), int(WIN_HEIGHT/2)))
-        text = STAT_FONT.render("Start in " + str(start_in), 1, (255, 255, 255))
-        win.blit(text, (int(WIN_WIDTH/2), int(WIN_HEIGHT/2)))
-
     base.draw(win)
     if(sinc_height_status==False):
         for _, bird in birds.items():
             bird.draw(win)
     else:
         birds[player].draw_height_sinc(win, sinc_height)
+
+    pygame.display.update()
+
+def draw_wait_room(win, start_in):
+    win.blit(BG_IMG, (0, 0))
+
+    if(start_in == -2):
+        text = STAT_FONT.render("Wait for Other Player", 1, (255, 255, 255))
+        win.blit(text, (WIN_WIDTH - text.get_width() - 70, int(WIN_HEIGHT/2)))
+    else:
+        text = STAT_FONT.render("Start in " + str(start_in), 1, (255, 255, 255))
+        win.blit(text, (WIN_WIDTH - text.get_width() - 178, int(WIN_HEIGHT/2)))
 
     pygame.display.update()
 
@@ -169,6 +173,7 @@ def main(win, clock):
 
     run = True
     is_move = False
+    is_wait = True
     sinc_y_bird = 0
     while(run):
         win.fill((0, 0, 0))
@@ -217,8 +222,8 @@ def main(win, clock):
                     plyr = data['Player']
                     #Handle when server broadcast "Start in"
                     if(data["Action"] == 0):
-                        draw_window(win, birds, pipes, base, scores, data["Value"])
-                        time.sleep(0.8)
+                        is_wait = False
+                        draw_wait_room(win, data["Value"])
                     #Handle when server broadcast "Start"
                     elif(data["Action"] == 1):
                         is_move = True
@@ -233,7 +238,7 @@ def main(win, clock):
                     elif(data["Action"] == 5):
                         if(plyr in birds and 
                                 abs(birds[plyr].y - data['Value'])>10):
-                            draw_window(win, birds, pipes, base, scores, -1, plyr, data['Value'], True)
+                            draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
         
         if (add_pipe):
             for key, _ in birds.items():
@@ -255,8 +260,12 @@ def main(win, clock):
         #     if(PLAYER in birds):
         #         send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
 
+        if(is_wait==True):
+            draw_wait_room(win, -2)
+        elif(is_move==True):
+            draw_window(win, birds, pipes, base, scores)
         base.move(is_move)
-        draw_window(win, birds, pipes, base, scores)
+        
     
     send_msg(server, data_send(PLAYER, -1))
 
@@ -264,7 +273,7 @@ if __name__ == "__main__":
     
     # win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     # clock = pygame.time.Clock()
-    Thread(target=send_msg, args=(server,data_send(PLAYER, 0))).start()
+    Thread(target=send_msg, args=(server,data_send(PLAYER, -2))).start()
     Thread(target=recv_msg, args=(server,)).start()
 
     # start_menu()
