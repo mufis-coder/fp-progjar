@@ -14,7 +14,7 @@ def recv_msg(sock):
     try:
         data = sock.recv(2048)
         data_pick = pickle.loads(data)
-        # print(data_pick)
+        # print("Message from server: " + str(data_pick))
         return data_pick
     except:
         # print("Exception Occured!")

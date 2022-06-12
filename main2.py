@@ -147,7 +147,7 @@ def main(win, clock):
                         height_pipe = data['Value']
                     #Handle when server broadcast "Bird Height"
                     elif(data["Action"] == 5):
-                        if(plyr in birds and 
+                        if(plyr != PLAYER and plyr in birds and 
                                 abs(birds[plyr].y - data['Value'])>10):
                             draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
                     #Handle when server broadcast "End"
@@ -171,7 +171,7 @@ def main(win, clock):
 
         #Synchronize y or height bird
         sincron += 1
-        if (sincron >= 50):
+        if (sincron >= 25):
             sincron = 0
             if(PLAYER in birds):
                 send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))

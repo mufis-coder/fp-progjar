@@ -50,7 +50,7 @@ def clientthread(conn, addr):
                     #Handle when user want "Jump", "Bird Height"
                     else:
                         broadcast(message)
-                    print("Message from client: " + str(msg_ori))
+                    # print("Message from client: " + str(msg_ori))
             else:
                 remove(conn)
         except:
