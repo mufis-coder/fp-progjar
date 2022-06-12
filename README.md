@@ -51,6 +51,66 @@ Khusus pada action "Start in", "Height Pipe", dan "Bird Height" data memiliki va
 
 - "Bird Height": berisi value int (tinggi burung) untuk sinkronisasi burung antar player. Digenerate oleh ```main{1/2}.py```.
 
+## Modul Kelas yang Diimplementasi
+
+- Thread: server dan client telah menggunakan konsep thread untuk menjalankan code.
+
+server
+
+```py
+while True:
+    conn, addr = server.accept()
+    list_of_clients.append(conn)
+    threading.Thread(target=clientthread, args=(conn, addr)).start()
+```
+
+client
+
+```py
+if __name__ == "__main__":
+    Thread(target=send_msg, args=(server,data_send(PLAYER, -2))).start()
+    Thread(target=recv_msg, args=(server,)).start()
+```
+
+- Socket: server dan client telah menggunakan konsep socket untuk saling bertukar informasi.
+
+```py
+def send_msg(sock, data):
+    sock.send(data)
+    sys.stdout.flush()
+
+def recv_msg(sock):
+    try:
+        data = sock.recv(2048)
+        data_pick = pickle.loads(data)
+        # print("Message from server: " + str(data_pick))
+        return data_pick
+    except:
+        # print("Exception Occured!")
+        pass
+```
+
+- TCP: server dan client telah menggunakan protokol TCP untuk saling bertukar informasi.
+
+```py
+def broadcast(message):
+    for client in list_of_clients:
+        try:
+            client.send(message)
+        except:
+            client.close()
+            remove(client)
+```
+
+- Object Serialization: server dan client telah menggunakan pickel sebagai objek/data serialisasi.
+
+```py
+def data_send(player, act, val=None):
+    data_dict = {"Player":player, "Action":act, "Value":val}
+    data = pickle.dumps(data_dict)
+    return data
+```
+
 ## Perbedaan ```main.py``` dan ```main2.py```
 
 Pada ```main.py``` yang digunakan untuk player1, memiliki perbedaan code berikut:
