@@ -46,6 +46,7 @@ def clientthread(conn, addr):
                     #Handle when user want "End"
                     elif(msg_ori['Action'] == -1):
                         clients_login.remove(msg_ori['Player'])
+                        broadcast(message)
                     #Handle when user want "Jump", "Bird Height"
                     else:
                         broadcast(message)

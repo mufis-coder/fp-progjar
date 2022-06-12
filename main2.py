@@ -27,7 +27,7 @@ from utils_game.assets import BIRD_IMGS, STAT_FONT, BG_IMG
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # ip_address = '127.0.0.1'
 # port = 8081
-ip_address = '13.229.230.226'
+ip_address = '3.0.180.101'
 port = 5555
 server.connect((ip_address, port))
 
@@ -149,6 +149,9 @@ def main(win, clock):
                         if(plyr in birds and 
                                 abs(birds[plyr].y - data['Value'])>10):
                             draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
+                    #Handle when server broadcast "End"
+                    elif(data["Action"] == -1):
+                        birds.pop(plyr)
         
         if(add_pipe):
             for ind_bird, _ in birds.items():
@@ -158,9 +161,14 @@ def main(win, clock):
         for r in rem:
             pipes.remove(r)
         
-        for _, bird in birds.items():
-            if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
-                birds = {key:val for key, val in birds.items() if val != bird}
+        # for _, bird in birds.items():
+        #     if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
+        #         birds = {key:val for key, val in birds.items() if val != bird}
+        if (birds[PLAYER].y + birds[PLAYER].img.get_height() >= 630 or birds[PLAYER].y < 0):
+            birds.pop(PLAYER)
+            send_msg(server, data_send(PLAYER, -1))
+
+
         if len(birds) <=0:
             run = False
 
