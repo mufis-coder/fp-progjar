@@ -25,6 +25,24 @@ ACTION = {-2:"Init Thread", -1:"End", 0:"Start in",
             1:"Start", 2:"Jump", 3:"Add Pipe", 4:"Height Pipe", 5:"Bird Height"}
 ```
 
+### Penjelasan Action
+
+- "Init Thread": digunakan client/player untuk memberitahu server bahwa ada player yang login.
+
+- "End": digunakan client/player untuk memberitahu server bahwa ada player yang keluar dari game atau karakternya mati.
+
+- "Start in": digunakan server untuk memberitahu tiap player bahwa game akan dimulai.
+
+- "Start": digunakan server untuk memberitahu tiap player bahwa game dimulai.
+
+- "Jump": digunakan client/player untuk memberitahu server bahwa ada player yang melakukan jump karakter.
+
+- "Add Pipe": digunakan client/player untuk memberi tahu server untuk membuat angka tinggi pipe selanjutnya.
+
+- "Height Pipe": digunakan server untuk mengirim data tinggi pipe selanjutnya.
+
+- "Bird Height": digunakan client/player untuk mengirim data sinkronisasi tinggi burung.
+
 Khusus pada action "Start in", "Height Pipe", dan "Bird Height" data memiliki value yang tidak None.
 
 - "Start in": berisi value waktu (dalam detik) untuk memulai game. Digenerate oleh ```server.py```.
