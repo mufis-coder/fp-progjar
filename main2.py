@@ -82,6 +82,7 @@ def main(win, clock):
     run = True
     is_move = False
     is_wait = True
+    sincron = 0
     while(run):
         win.fill((0, 0, 0))
         clock.tick(30)
@@ -167,6 +168,13 @@ def main(win, clock):
 
         if len(birds) <=0:
             run = False
+
+        #Synchronize y or height bird
+        sincron += 1
+        if (sincron >= 50):
+            sincron = 0
+            if(PLAYER in birds):
+                send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
 
         if(is_wait==True):
             draw_wait_room(win, -2)
