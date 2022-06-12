@@ -171,7 +171,7 @@ def main(win, clock):
 
         #Synchronize y or height bird
         sincron += 1
-        if (sincron >= 25):
+        if (sincron >= 40):
             sincron = 0
             if(PLAYER in birds):
                 send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
