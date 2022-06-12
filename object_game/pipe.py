@@ -5,13 +5,12 @@ import os
 PIPE_IMG = pygame.transform.scale2x(pygame.image.load(os.path.join("imgs", "pipe.png")))
 
 class Pipe:
-    GAP = 200
+    GAP = 300
     VEL = 5
 
     def __init__(self, x, height):
         self.x = x
         self.height = 0
-        self.gap = 100
 
         self.top = 0
         self.bottom = 0
@@ -45,6 +44,6 @@ class Pipe:
         b_point = bird_mask.overlap(bottom_mask, bottom_offset)
         t_point = bird_mask.overlap(top_mask, top_offset)
         
-        # if t_point or b_point:
-        #     return True
+        if t_point or b_point:
+            return True
         return False

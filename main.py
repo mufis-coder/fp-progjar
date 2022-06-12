@@ -93,8 +93,9 @@ def main(win, clock):
             
             if (event.type == pygame.KEYDOWN):
                 if (event.key == KEYJUMP):
+                    if(PLAYER in birds):
+                        birds[PLAYER].jump()
                     send_msg(server, data_send(PLAYER, 2))
-                    # bird.jump()
 
         # recv_msg(server)
 
@@ -106,9 +107,8 @@ def main(win, clock):
         add_pipe = False
         for pipe in pipes:
             for idx_bird, bird in birds.items():
-                if pipe.collide(bird):
-                    run = False
-                    break
+                if idx_bird==PLAYER and pipe.collide(bird):
+                    send_msg(server, data_send(PLAYER, -1))
                 if (not pipe.passed and 2*pipe.x<bird.x):
                     pipe.passed = True
                     add_pipe = True
@@ -161,13 +161,9 @@ def main(win, clock):
         for r in rem:
             pipes.remove(r)
         
-        # for _, bird in birds.items():
-        #     if (bird.y + bird.img.get_height() >= 630 or bird.y < 0):
-        #         birds = {key:val for key, val in birds.items() if val != bird}
-        if (birds[PLAYER].y + birds[PLAYER].img.get_height() >= 630 or birds[PLAYER].y < 0):
-            birds.pop(PLAYER)
-            send_msg(server, data_send(PLAYER, -1))
-
+        if PLAYER in birds:
+            if (birds[PLAYER].y + birds[PLAYER].img.get_height() >= 630 or birds[PLAYER].y < 0):
+                send_msg(server, data_send(PLAYER, -1))
 
         if len(birds) <=0:
             run = False
