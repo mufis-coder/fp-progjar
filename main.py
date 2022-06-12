@@ -25,10 +25,10 @@ from utils_game.assets import POSX1, POSY1, POSX2, POSY2, WIN_WIDTH, WIN_HEIGHT
 from utils_game.assets import BIRD_IMGS, STAT_FONT, BG_IMG
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ip_address = '127.0.0.1'
-port = 8081
-# ip_address = '13.229.230.226'
-# port = 5555
+# ip_address = '127.0.0.1'
+# port = 8081
+ip_address = '13.229.230.226'
+port = 5555
 server.connect((ip_address, port))
 
 win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -105,13 +105,16 @@ def main(win, clock):
         rem = []
         add_pipe = False
         for pipe in pipes:
-            for _, bird in birds.items():
+            for idx_bird, bird in birds.items():
                 if pipe.collide(bird):
                     run = False
                     break
                 if (not pipe.passed and 2*pipe.x<bird.x):
                     pipe.passed = True
                     add_pipe = True
+                    #Synchronize y or height bird
+                    if(PLAYER == idx_bird):
+                        send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
                 if (pipe.x+pipe.PIPE_TOP.get_width() < 0):
                     rem.append(pipe)
             
@@ -148,8 +151,8 @@ def main(win, clock):
                             draw_window(win, birds, pipes, base, scores, plyr, data['Value'], True)
         
         if(add_pipe):
-            for key, _ in birds.items():
-                scores[key] += 1
+            for ind_bird, _ in birds.items():
+                scores[ind_bird] += 1
             pipes.append(Pipe(600, height_pipe))
         
         for r in rem:
@@ -160,12 +163,6 @@ def main(win, clock):
                 birds = {key:val for key, val in birds.items() if val != bird}
         if len(birds) <=0:
             run = False
-        
-        # sinc_y_bird += 1
-        # if(sinc_y_bird>40):
-        #     sinc_y_bird = 0
-        #     if(PLAYER in birds):
-        #         send_msg(server, data_send(PLAYER, 5, birds[PLAYER].y))
 
         if(is_wait==True):
             draw_wait_room(win, -2)
