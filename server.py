@@ -8,10 +8,10 @@ import random
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = ''
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = ''
+# port = 5555
 server.bind((ip_address, port))
 server.listen(100)
 list_of_clients = []
@@ -49,8 +49,7 @@ def clientthread(conn, addr):
                     #Handle when user want "Jump", "Bird Height"
                     else:
                         broadcast(message)
-                    print("print u: " + str(msg_ori))
-                    print("Client login: " + str(clients_login))
+                    print("Message from client: " + str(msg_ori))
             else:
                 remove(conn)
         except:
