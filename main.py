@@ -25,10 +25,10 @@ from utils_game.assets import POSX1, POSY1, POSX2, POSY2, WIN_WIDTH, WIN_HEIGHT
 from utils_game.assets import BIRD_IMGS, STAT_FONT, BG_IMG
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = '3.0.180.101'
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = '3.0.180.101'
+# port = 5555
 server.connect((ip_address, port))
 
 win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -50,14 +50,14 @@ def start_menu(win, clock):
         win.blit(startText, ((WIN_WIDTH - startText.get_width()) / 2, 100))
 
         # start button (left, top, width, height)
-        start_button = create_button(win, 200, WIN_HEIGHT/2 - 8 , 120, 40, lightgrey, slategrey)
+        start_button = create_button(win, 190, WIN_HEIGHT/2 + 8 , 160, 50, lightgrey, slategrey)
 
         if start_button:
             main(win, clock)
 
         # Start button text
         startbuttontext = font.render("START", True, blackish)
-        win.blit(startbuttontext, (210, WIN_HEIGHT/2))
+        win.blit(startbuttontext, (200, WIN_HEIGHT/2))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
