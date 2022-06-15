@@ -50,14 +50,20 @@ def start_menu(win, clock):
         win.blit(startText, ((WIN_WIDTH - startText.get_width()) / 2, 100))
 
         # start button (left, top, width, height)
-        start_button = create_button(win, 190, WIN_HEIGHT/2 + 8 , 160, 50, lightgrey, slategrey)
+        start_button = create_button(win, 170, WIN_HEIGHT/2 + 8 , 160, 50, lightgrey, slategrey)
+        exit_button = create_button(win, 170, WIN_HEIGHT/2 + 78 , 160, 50, lightgrey, slategrey)
 
         if start_button:
             main(win, clock)
+        if exit_button:
+            exit()
 
         # Start button text
         startbuttontext = font.render("START", True, blackish)
-        win.blit(startbuttontext, (200, WIN_HEIGHT/2))
+        win.blit(startbuttontext, (180, WIN_HEIGHT/2))
+        
+        exitbuttontext = font.render("Exit", True, blackish)
+        win.blit(exitbuttontext, (210, WIN_HEIGHT/2 + 70))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
