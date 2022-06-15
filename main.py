@@ -20,7 +20,7 @@ from utils_game.sent_data import data_send
 from utils_game.sent_data import send_msg
 from utils_game.sent_data import recv_msg
 from utils_game.draw_window import draw_window, draw_wait_room, create_button
-from utils_game.assets import smallfont, slategrey, lightgrey, font, blackish
+from utils_game.assets import smallfont, slategrey, lightgrey, font, blackish, red , green, lightgreen,lightred
 from utils_game.assets import POSX1, POSY1, POSX2, POSY2, WIN_WIDTH, WIN_HEIGHT
 from utils_game.assets import BIRD_IMGS, STAT_FONT, BG_IMG
 
@@ -50,8 +50,8 @@ def start_menu(win, clock):
         win.blit(startText, ((WIN_WIDTH - startText.get_width()) / 2, 100))
 
         # start button (left, top, width, height)
-        start_button = create_button(win, 170, WIN_HEIGHT/2 + 8 , 160, 50, lightgrey, slategrey)
-        exit_button = create_button(win, 170, WIN_HEIGHT/2 + 78 , 160, 50, lightgrey, slategrey)
+        start_button = create_button(win, 170, WIN_HEIGHT/2 + 8 , 160, 50, green, lightgrey)
+        exit_button = create_button(win, 170, WIN_HEIGHT/2 + 78 , 160, 50, red, lightgrey)
 
         if start_button:
             main(win, clock)
