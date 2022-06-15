@@ -56,7 +56,8 @@ def start_menu(win, clock):
         if start_button:
             main(win, clock)
         if exit_button:
-            exit()
+            pygame.quit()
+            sys.exit()
 
         # Start button text
         startbuttontext = font.render("START", True, blackish)
