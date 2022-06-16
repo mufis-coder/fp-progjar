@@ -25,10 +25,10 @@ from utils_game.assets import POSX1, POSY1, POSX2, POSY2, WIN_WIDTH, WIN_HEIGHT
 from utils_game.assets import BIRD_IMGS, STAT_FONT, BG_IMG
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# ip_address = '127.0.0.1'
-# port = 8081
-ip_address = '3.0.180.101'
-port = 5555
+ip_address = '127.0.0.1'
+port = 8081
+# ip_address = '3.0.180.101'
+# port = 5555
 server.connect((ip_address, port))
 
 win = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
