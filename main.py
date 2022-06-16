@@ -101,8 +101,8 @@ def main(win, clock):
             
             if (event.type == pygame.KEYDOWN):
                 if (event.key == KEYJUMP):
-                    if(PLAYER in birds):
-                        birds[PLAYER].jump()
+                    # if(PLAYER in birds):
+                    #     birds[PLAYER].jump()
                     send_msg(server, data_send(PLAYER, 2))
 
         # recv_msg(server)
