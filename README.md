@@ -2,6 +2,42 @@
 
 Repository Final Project - mata kuliah Pemrograman Jaringan
 
+## Cara Run aplikasi
+
+### Secara Lokal
+
+- Pada ```server.py```, ubah ip address dan portnya sebagai berikut:
+
+```py
+ip_address = '127.0.0.1'
+port = 8081
+```
+
+- pada ```main.py``` dan ```main2.py```, ubah juga ip address dan portnya sebagai berikut:
+
+```py
+ip_address = '127.0.0.1'
+port = 8081
+```
+
+### Secara Online
+
+- Pada ```server.py```, ubah ip address dan portnya sebagai berikut:
+
+```py
+ip_address = ''
+port = 5555
+```
+
+- pada ```main.py``` dan ```main2.py```, ubah juga ip address dan portnya sebagai berikut:
+
+```py
+ip_address = '{ip public dari deployment server.py}'
+port = 5555
+```
+
+Selanjutnya jalankan ```server.py```, lalu jalankan ```main.py``` dan ```main2.py```.
+
 Format data yang dikirim:
 
 ```txt
